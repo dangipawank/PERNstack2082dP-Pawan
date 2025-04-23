@@ -1,0 +1,128 @@
+NODE JS developed by Ryan Dahl
+
+Node.js is single-threaded but highly efficient due to its event-driven, non-blocking I/O model.
+This efficiency is powered by a library called **libuv**.
+
+### How Node.js is Efficient with libuv:
+
+1. **Event Loop**:
+
+   - The event loop is the core of Node.js. It continuously checks for tasks (e.g., I/O operations, timers, etc.) and executes them.
+   - The event loop ensures that the main thread is never blocked, allowing Node.js to handle thousands of concurrent requests.
+   - **Analogy**: The event loop acts like a **helper** who coordinates between the waiter (main thread) and the kitchen (thread pool).
+
+2. **libuv**:
+
+   - libuv is a C library that provides Node.js with its asynchronous, non-blocking behavior.
+   - It manages the event loop and a thread pool for handling tasks that cannot be performed asynchronously by the operating system.
+   - **Analogy**: libuv is like the **kitchen system** that ensures tasks are delegated to the chefs (thread pool) and notifies the helper (event loop) when the task is complete.
+
+3. **Thread Pool**:
+
+   - libuv uses a thread pool (default size: 4 threads) to handle blocking operations like:
+     - File system operations (e.g., reading/writing files).
+     - DNS lookups.
+     - Compression (e.g., zlib).
+     - Cryptography (e.g., hashing, encryption).
+   - These tasks are offloaded to the thread pool, so the main thread remains free to handle other requests.
+   - **Analogy**: The thread pool is like the **chefs in the kitchen** who handle time-consuming tasks like cooking.
+
+4. **Non-blocking I/O**:
+   - Node.js uses non-blocking I/O for network operations (e.g., HTTP requests, database queries).
+   - This means the main thread does not wait for the operation to complete; instead, it registers a callback and moves on to the next task.
+   - **Analogy**: The waiter (main thread) doesn’t wait for the chefs to finish cooking; they continue taking other orders.
+
+---
+
+### Synchronous (Sync) vs Asynchronous (Async) in Node.js:
+
+1. **Synchronous (Blocking)**:
+
+   - In synchronous operations, the code executes line by line, and each operation must complete before the next one starts.
+   - Example:
+     ```javascript
+     const fs = require("fs");
+     const data = fs.readFileSync("file.txt", "utf8"); // Blocks the main thread
+     console.log(data);
+     console.log("This will execute after the file is read.");
+     ```
+   - **Problem**: If the file is large, the main thread is blocked, and no other operations can be performed.
+
+2. **Asynchronous (Non-blocking)**:
+   - In asynchronous operations, the code does not wait for the task to complete. Instead, a callback is registered, and the main thread continues executing other tasks.
+   - Example:
+     ```javascript
+     const fs = require("fs");
+     fs.readFile("file.txt", "utf8", (err, data) => {
+       if (err) throw err;
+       console.log(data);
+     });
+     console.log("This will execute before the file is read.");
+     ```
+   - **Advantage**: The main thread is free to handle other tasks while the file is being read.
+
+---
+
+### Real-World Example:
+
+Imagine a Node.js server handling multiple client requests:
+
+- When a client requests a file, the file reading operation is offloaded to the libuv thread pool.
+- While the file is being read, the main thread can handle other client requests.
+- Once the file is read, the callback is executed, and the response is sent to the client.
+
+### Code Example:
+
+```javascript
+const fs = require("fs");
+const http = require("http");
+
+// Create a server
+http
+  .createServer((req, res) => {
+    if (req.url === "/file") {
+      // Offload file reading to libuv's thread pool
+      fs.readFile("largefile.txt", "utf8", (err, data) => {
+        if (err) {
+          res.writeHead(500);
+          res.end("Error reading file");
+          return;
+        }
+        res.writeHead(200);
+        res.end(data);
+      });
+    } else {
+      res.writeHead(200);
+      res.end("Hello, World!");
+    }
+  })
+  .listen(3000, () => {
+    console.log("Server running on port 3000");
+  });
+```
+
+step 1
+npm init -y
+
+step 2
+create new file mostly used(app.js)
+
+inside backend
+
+routing
+middleware
+session
+caching
+the above things are framework those can be taken from npmjs.com
+
+expressjs role is 90 percent in every node js project
+
+nestjs is alternative of express
+fastify is also the alternative of express
+npm install express
+
+this will add dependencies in package.json
+
+1.1.1 semantic versioniong
+
+dependency means package or in other words dependency means how much the project is dependent upon other projects
