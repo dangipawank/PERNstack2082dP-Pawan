@@ -1,0 +1,19 @@
+# Ignore node modules and logs
+node_modules/
+Backend/node_modules/
+*.log
+
+# Ignore environment files
+.env
+
+# Ignore editor folders
+.vscode/
+
+# Ignore lock files
+package-lock.json
+Backend/package-lock.json
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
